@@ -12,7 +12,7 @@ class devDB :public sqlDB
         devDB();
         ~devDB();
 
-        bool set(devDBKey key, string value);
+        bool set(devDBKey key, const string& value);
         bool get(devDBKey key, string& value);
 
     private:

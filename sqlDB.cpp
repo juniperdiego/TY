@@ -1,8 +1,9 @@
 #include "sqlDB.h"
 
-sqlite3 * sqlDB:: s_db = NULL;
+sqlite3 * sqlDB::s_db = NULL;
+unsigned int sqlDB::s_refCnt = 0;
 
-int isExisted( void * para, int n_column, char ** column_value, char ** column_name ) 
+int isExisted( void * para, int /*n_column*/, char ** column_value, char ** /*column_name*/ ) 
 { 
         bool *isExisted_=(bool*)para; 
             *isExisted_= (**column_value) != '0'; 
@@ -11,6 +12,9 @@ int isExisted( void * para, int n_column, char ** column_value, char ** column_n
 
 sqlDB::sqlDB()
 {
+    s_refCnt ++;
+    //cout << "Ctor" ;
+    //cout << "s_refCnt \t" << s_refCnt<<endl;
     if(s_db == NULL)
     {
         const string dbName = "zig.db";
@@ -29,11 +33,16 @@ sqlDB::sqlDB()
 
 sqlDB::~sqlDB()
 {
-    if(s_db != NULL)
+    s_refCnt --;
+    //cout << "Destor" ;
+    //cout << "s_refCnt \t" << s_refCnt<<endl;
+#if 1
+    if(s_refCnt == 0 && s_db != NULL)
     {
         sqlite3_close(s_db);
         s_db = NULL;
     }
+#endif
 }
 
 int sqlDB::tableExist(string tableName)
@@ -44,7 +53,13 @@ int sqlDB::tableExist(string tableName)
 
     char str[1024];
     sprintf(str, "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='%s';", tableName.c_str());
-    sqlite3_exec( s_db , str , isExisted , & bExist, &zErrMsg );
+    rc = sqlite3_exec( s_db , str , isExisted , & bExist, &zErrMsg );
+    if( rc )
+    {
+        fprintf(stderr, "function tableExist() : %s\n", sqlite3_errmsg(s_db));
+        sqlite3_close(s_db);
+        exit(1);
+    }
     return bExist;
 }
 
@@ -60,7 +75,7 @@ bool sqlDB::insertToTable(string tableName, int key, string val)
 
 int sqlDB::sqlInit()
 {
-
+    return true;
 }
 
 

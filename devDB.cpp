@@ -37,7 +37,7 @@ devDB::~devDB()
 }
 
 
-bool devDB::set(devDBKey key, string value)
+bool devDB::set(devDBKey key, const string& value)
 {
     char sql[1024] ="";
     char* errMsg;

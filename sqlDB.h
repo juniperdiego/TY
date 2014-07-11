@@ -15,6 +15,7 @@ class sqlDB
 {
     public:
         int sqlInit();
+        sqlite3 * get_db() {return s_db;};
         sqlDB();
         ~sqlDB();
 
@@ -67,6 +68,7 @@ class sqlDB
 #endif
     protected:
         static sqlite3     *s_db;
+        static unsigned int s_refCnt;
         
 #if 0
         sqlite3 *dev_db;
