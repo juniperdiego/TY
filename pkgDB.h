@@ -13,6 +13,12 @@ class pkgInfo
         vector<string>  apkList;
         int             apkSum;
         string          date;
+
+   pkgInfo()
+       :pkgID(INVALID_ID),apkSum(0)
+   {
+   };
+
 };
 
 

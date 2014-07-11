@@ -110,6 +110,16 @@ bool sqlDB::deleteTable()
     return true;
 }
 
+bool sqlDB::clearTableItems()
+{
+    char sql[1024] ="";
+    char* errMsg = NULL;
+    sprintf(sql, "DELETE FROM %s;", m_tabName.c_str());
+    if(SQLITE_OK != sqlite3_exec(s_db, sql, NULL, NULL, &errMsg))
+        return false;
+    return true;
+}
+
 string sqlDB::getTableName()
 {
     return m_tabName;

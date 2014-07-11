@@ -10,6 +10,7 @@
 #include <time.h>
 
 using namespace std;
+const int INVALID_ID = -1;
 
 class sqlDB
 {
@@ -22,13 +23,13 @@ class sqlDB
         string getTableName();
         void   setTableName(const string& tabName);
 
-        bool deleteTable();
+        bool clearTableItems();
+        bool deleteTable();// delete the table, cautious to use
         bool tableExist();
         bool insertToTable(int key, string val);
         bool exist_in_db(sqlite3 *db, const string table, const string id );
 
     private:
-        bool tabelExist(const string table, const string id );
 
 #if 0
         void get_unix_time(char time_str[]);

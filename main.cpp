@@ -1,5 +1,6 @@
 #include "devDB.h"
 #include "pkgDB.h"
+#include "apkDB.h"
 
 using namespace std;
 
@@ -8,7 +9,7 @@ using namespace std;
 
 int main()
 {
-#if 0
+#if 1
     // 1  test devDB
     devDB  dev_db;
 
@@ -89,7 +90,7 @@ int main()
     char **azResult; 
     char * zErrMsg;
 
-    char sql[] = "SELECT * FROM packageTable";
+    char sql[1024] = "SELECT * FROM packageTable";
     sqlite3_get_table( pkg_db.get_db() , sql , &azResult , &nrow , &ncolumn , &zErrMsg );
 
     int i = 0 ;
@@ -141,5 +142,97 @@ int main()
     }
     cout << endl;
 #endif
+    
+    // 3 test exist/delet/clear table
+    bool rc = pkg_db.tableExist();
+    cout <<"exist \t" << rc<< endl;
+
+    sprintf(sql,"SELECT count(*) FROM sqlite_master WHERE type='table';");
+    //sprintf(sql, "SELECT * FROM packageTable");
+    sqlite3_get_table( pkg_db.get_db() , sql , &azResult , &nrow , &ncolumn , &zErrMsg );
+
+    printf( "row:%d column=%d \n" , nrow , ncolumn );
+    printf( "\nThe result of querying is : \n" );
+
+    for( i=0 ; i<( nrow + 1 ) * ncolumn ; i++ )
+        printf( "azResult[%d] = %s\n", i , azResult[i] );
+
+    // clear
+    pkg_db.clearTableItems();
+    rc = pkg_db.tableExist();
+    cout <<"after clear ====== exist \t" << rc<< endl;
+    
+    sqlite3_get_table( pkg_db.get_db() , sql , &azResult , &nrow , &ncolumn , &zErrMsg );
+
+    printf( "row:%d column=%d \n" , nrow , ncolumn );
+    printf( "\nThe result of querying is : \n" );
+
+    for( i=0 ; i<( nrow + 1 ) * ncolumn ; i++ )
+        printf( "azResult[%d] = %s\n", i , azResult[i] );
+
+    // delete
+    pkg_db.deleteTable();
+    dev_db.deleteTable();
+    rc = pkg_db.tableExist();
+    cout <<"after delete ===== exist \t" << rc<< endl;
+
+    sqlite3_get_table( pkg_db.get_db() , sql , &azResult , &nrow , &ncolumn , &zErrMsg );
+
+    printf( "row:%d column=%d \n" , nrow , ncolumn );
+    printf( "\nThe result of querying is : \n" );
+
+    for( i=0 ; i<( nrow + 1 ) * ncolumn ; i++ )
+        printf( "azResult[%d] = %s\n", i , azResult[i] );
+
+
+    // apkDB
+
+#if 0
+class apkInfo {
+    public:
+        int         apkID;
+        string      pkgName;
+        int         counter;
+        dspIcon     dIcon;
+        autoRun     aRun;
+        string      md5;
+
+    apkInfo()
+            :apkID(INVALID_ID),
+            counter(0),
+            dIcon(noDsp), 
+            aRun(noRun) 
+    {
+    };
+};
+#endif
+    apkDB  apk_db;
+    apkInfo aInfo;
+
+    apk_db.get(aInfo);
+    print(aInfo);
+
+    aInfo.apkID  = 2000;
+    aInfo.pkgName = "xxxpkdfd";
+    aInfo.counter = 3454;
+    aInfo.dIcon = NO_DSP;
+    aInfo.aRun = RUN;
+    aInfo.md5 = "12345678901234567890123456789023";
+
+    apk_db.set(aInfo);
+    apk_db.get(aInfo);
+    print(aInfo);
+
+    aInfo.apkID  = 2003;
+    aInfo.pkgName = "xcvcvxxxpkdfd";
+    aInfo.counter = 345455555;
+    aInfo.dIcon = NO_DSP;
+    aInfo.aRun = RUN;
+    aInfo.md5 = "1234xxxx678901234567890123456789023";
+
+    apk_db.set(aInfo);
+    apk_db.get(aInfo);
+    print(aInfo);
+
     return 0;
 }
