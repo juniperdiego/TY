@@ -19,8 +19,12 @@ class sqlDB
         sqlDB();
         ~sqlDB();
 
-        int tableExist(string tableName);
-        bool insertToTable(string tableName, int key, string val);
+        string getTableName();
+        void   setTableName(const string& tabName);
+
+        bool deleteTable();
+        bool tableExist();
+        bool insertToTable(int key, string val);
         bool exist_in_db(sqlite3 *db, const string table, const string id );
 
     private:
@@ -70,6 +74,9 @@ class sqlDB
         static sqlite3     *s_db;
         static unsigned int s_refCnt;
         
+
+    private:
+        string      m_tabName;
 #if 0
         sqlite3 *dev_db;
         sqlite3 *mob_db;

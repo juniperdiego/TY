@@ -6,18 +6,18 @@ pkgDB::pkgDB()
     // 1. should open the db, but the db is opened
     
     // 2. name the divec talbe 
-    m_tabName = "packageTable";
+    setTableName("packageTable");
 
     // 3. create the table 
     char sql[1024] ="";
-    if(!tableExist(m_tabName))
+    if(!tableExist())
     {
         char* errMsg;
         // creat the table
-        sprintf(sql, "CREATE TABLE %s ( key integer PRIMARY KEY, pkgName varchar(128), batchCode varchar(32), apkList TEXT,  apkSum int,  date varchar(16));", m_tabName.c_str());
+        sprintf(sql, "CREATE TABLE %s ( key integer PRIMARY KEY, pkgName varchar(128), batchCode varchar(32), apkList TEXT,  apkSum int,  date varchar(16));", getTableName().c_str());
         int rc =    sqlite3_exec(s_db, sql, NULL, NULL, &errMsg);
         if( rc ){   
-            fprintf(stderr, "Can't create table %s: %s\n", m_tabName.c_str(), errMsg);   
+            fprintf(stderr, "Can't create table %s: %s\n", getTableName().c_str(), errMsg);   
             sqlite3_close(s_db);   
             exit(1);
         }   
@@ -46,7 +46,7 @@ bool pkgDB::set( const pkgInfo& pkg)
     sprintf(sql, "insert or replace into %s\
             (key, pkgName, batchCode, apkList, apkSum, date)\
        values( %d, \"%s\",   \"%s\",  \"%s\",   %d,    \"%s\");",
-       m_tabName.c_str(),
+       getTableName().c_str(),
        pkg.pkgID, 
        pkg.pkgName.c_str(),
        pkg.batchCode.c_str(),
@@ -80,7 +80,7 @@ bool pkgDB::get(pkgInfo & pkg)
     sqlite3_stmt *stmt;
     int rc;
 
-    sprintf(sql, "select pkgName, batchCode, apkList, apkSum, date from %s where key = '%d';", m_tabName.c_str(), pkg.pkgID);
+    sprintf(sql, "select pkgName, batchCode, apkList, apkSum, date from %s where key = '%d';", getTableName().c_str(), pkg.pkgID);
 #if 0
     {
         int nrow = 0, ncolumn = 0;

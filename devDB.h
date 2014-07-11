@@ -16,7 +16,6 @@ class devDB :public sqlDB
         bool get(devDBKey key, string& value);
 
     private:
-        string      m_tabName;
 
         //database value
         string      m_devVer;

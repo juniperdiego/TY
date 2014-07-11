@@ -26,8 +26,6 @@ class pkgDB :public sqlDB
         bool set(const pkgInfo& pkg);
         bool get(pkgInfo & pkg);
 
-    private:
-        string      m_tabName;
 };
 
 

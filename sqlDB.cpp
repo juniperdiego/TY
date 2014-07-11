@@ -45,14 +45,14 @@ sqlDB::~sqlDB()
 #endif
 }
 
-int sqlDB::tableExist(string tableName)
+bool sqlDB::tableExist()
 {
     bool bExist;
     char *zErrMsg = 0;
     int rc;
 
     char str[1024];
-    sprintf(str, "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='%s';", tableName.c_str());
+    sprintf(str, "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='%s';", m_tabName.c_str());
     rc = sqlite3_exec( s_db , str , isExisted , & bExist, &zErrMsg );
     if( rc )
     {
@@ -63,11 +63,11 @@ int sqlDB::tableExist(string tableName)
     return bExist;
 }
 
-bool sqlDB::insertToTable(string tableName, int key, string val)
+bool sqlDB::insertToTable(int key, string val)
 {
     char sql[1024] ="";
     char* errMsg = NULL;
-    sprintf(sql, "insert into %s (key, val)  values( %d, \"%s\" );", tableName.c_str(), key, val.c_str());
+    sprintf(sql, "insert into %s (key, val)  values( %d, \"%s\" );", m_tabName.c_str(), key, val.c_str());
     if(SQLITE_OK == sqlite3_exec(s_db, sql, NULL, NULL, &errMsg))
         return true;
     return false;
@@ -80,7 +80,7 @@ int sqlDB::sqlInit()
 
 
 bool sqlDB::exist_in_db(sqlite3 *db, const string table, const string id ){
-    char sql_query[128]={0};
+    char sql_query[1024]={0};
     sprintf(sql_query,"select count(*) from %s where id='%s'", table.c_str(), id.c_str());
 
     sqlite3_stmt *pstmt;
@@ -96,3 +96,26 @@ bool sqlDB::exist_in_db(sqlite3 *db, const string table, const string id ){
 }
 
 
+bool sqlDB::deleteTable()
+{
+
+    char sql[1024] ="";
+    char* errMsg = NULL;
+    sprintf(sql, "drop table %s;", m_tabName.c_str());
+    if(SQLITE_OK != sqlite3_exec(s_db, sql, NULL, NULL, &errMsg))
+        return false;
+    sprintf(sql, "VACUUM;" );
+    if(SQLITE_OK != sqlite3_exec(s_db, sql, NULL, NULL, &errMsg))
+        return false;
+    return true;
+}
+
+string sqlDB::getTableName()
+{
+    return m_tabName;
+}
+
+ void sqlDB::setTableName(const string& tabName)
+{
+    m_tabName =  tabName;
+}
