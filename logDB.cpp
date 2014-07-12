@@ -66,7 +66,7 @@ bool logDB::get(const string& date1, const string& date2, vector<logInfo> & logA
         char **azResult; 
         char * zErrMsg;
 
-        char* s = "SELECT * FROM logTable";
+        char s[] = "SELECT * FROM logTable";
         sqlite3_get_table(s_db , s , &azResult , &nrow , &ncolumn , &zErrMsg );
 
         int i = 0 ;
