@@ -8,6 +8,7 @@
 #include<string>
 #include<string.h>
 #include <time.h>
+#include <vector>
 
 using namespace std;
 const int INVALID_ID = -1;

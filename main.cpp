@@ -1,6 +1,9 @@
 #include "devDB.h"
 #include "pkgDB.h"
 #include "apkDB.h"
+#include "usbStatDB.h"
+#include "mblStatDB.h"
+#include "logDB.h"
 
 using namespace std;
 
@@ -233,6 +236,166 @@ class apkInfo {
     apk_db.set(aInfo);
     apk_db.get(aInfo);
     print(aInfo);
+
+
+    // 4 test usbStat
+    usbStatDB usd;
+    
+    usbStatInfo usi;
+    usi.usbIdx =  5;  
+    usi.date = "2012-01-01";
+    usi.count = 10;
+    usd.set(usi);
+
+    usi.usbIdx =  5;  
+    usi.date = "2012-01-03";
+    usi.count = 100;
+    usd.set(usi);
+
+    usi.usbIdx  =  53;  
+    usi.date = "2012-01-01";
+    usi.count = 100;
+    usd.set(usi);
+
+    usi.usbIdx =  6;  
+    usi.date = "2012-01-05";
+    usi.count = 100;
+    usd.set(usi);
+    
+    usi.usbIdx =  7;  
+    usi.date = "2012-02-05";
+    usi.count = 456;
+    usd.set(usi);
+
+    vector<usbStatInfo> array;
+
+    usd.get("2012-01-01","2012-01-01", array);
+    for(size_t i = 0; i< array.size(); i++)
+    {
+        print(array[i]);
+    }
+
+    usd.get("2012-01-01","2012-01-03", array);
+    for(size_t i = 0; i< array.size(); i++)
+    {
+        print(array[i]);
+    }
+
+    usd.get("2012-01-01","2012-01-05", array);
+    for(size_t i = 0; i< array.size(); i++)
+    {
+        print(array[i]);
+    }
+
+
+    // 4 test mblStat
+    mblStatDB msd;
+    
+    mblStatInfo msi;
+    msi.mblPattern =  "Nokia";  
+    msi.date = "2012-01-01";
+    msi.count = 10;
+    msd.set(msi);
+
+    msi.mblPattern =  "Nokia";  
+    msi.date = "2012-01-03";
+    msi.count = 15;
+    msd.set(msi);
+
+    msi.mblPattern =  "MOto";  
+    msi.date = "2012-01-01";
+    msi.count = 20;
+    msd.set(msi);
+
+    msi.mblPattern =  "Moto";  
+    msi.date = "2012-01-05";
+    msi.count = 30;
+    msd.set(msi);
+
+    msi.mblPattern =  "MOTO";  
+    msi.date = "2012-01-03";
+    msi.count = 40;
+    msd.set(msi);
+
+    msi.mblPattern =  "APPLE";  
+    msi.date = "2012-01-07";
+    msi.count = 50;
+    msd.set(msi);
+
+    msi.mblPattern =  "APPLE";  
+    msi.date = "2012-01-08";
+    msi.count = 70;
+    msd.set(msi);
+
+    vector<mblStatInfo> m_array;
+
+    msd.get("2012-01-01","2012-01-01", m_array);
+    for(size_t i = 0; i< m_array.size(); i++)
+    {
+        print(m_array[i]);
+    }
+    
+    cout << endl;
+
+    msd.get("2012-01-01","2012-01-03", m_array);
+    for(size_t i = 0; i< m_array.size(); i++)
+    {
+        print(m_array[i]);
+    }
+    cout << endl;
+
+
+    msd.get("2012-01-01","2012-01-05", m_array);
+    for(size_t i = 0; i< m_array.size(); i++)
+    {
+        print(m_array[i]);
+    }
+    cout << endl;
+
+
+
+    // 5 test mblStat
+    logDB logdb;
+    logInfo loginfo;
+    vector<logInfo> logArray;
+
+    loginfo.date = "2012-01-01";
+    loginfo.isUploaded = true;
+    logdb.set(loginfo);
+
+    loginfo.date = "2012-01-08";
+    loginfo.isUploaded = false;
+    logdb.set(loginfo);
+
+    loginfo.date = "2012-01-04";
+    loginfo.isUploaded = true;
+    logdb.set(loginfo);
+    
+    loginfo.date = "2012-01-02";
+    loginfo.isUploaded = true;
+    logdb.set(loginfo);
+    
+
+    logdb.get("2012-01-01","2012-01-03", logArray);
+    for(size_t i = 0; i< logArray.size(); i++)
+    {
+        print(logArray[i]);
+    }
+    cout << endl;
+
+    logdb.get("2012-01-01","2012-01-05", logArray);
+    for(size_t i = 0; i< logArray.size(); i++)
+    {
+        print(logArray[i]);
+    }
+    cout << endl;
+
+    logdb.get("2012-01-01","2012-01-08", logArray);
+    for(size_t i = 0; i< logArray.size(); i++)
+    {
+        print(logArray[i]);
+    }
+    cout << endl;
 
     return 0;
 }
